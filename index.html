@@ -410,14 +410,31 @@ function renderMap(data, routeProps) {
   if (!apiKey) return;
   const ph = document.getElementById('mapPlaceholder');
   if (ph) ph.remove();
-  const origin      = encodeURIComponent((lead.city||'')+' '+(lead.state||'')+' '+lead.zip);
-  const destination = encodeURIComponent(routeProps[routeProps.length-1].a);
-  const waypoints   = routeProps.slice(0,-1).map(p => encodeURIComponent(p.a)).join('|');
-  const src = 'https://www.google.com/maps/embed/v1/directions?key='+apiKey+
-    '&origin='+origin+'&destination='+destination+(waypoints?'&waypoints='+waypoints:'')+'&mode=driving';
-  const iframe = document.createElement('iframe');
-  iframe.src=src; iframe.allowFullscreen=true; iframe.loading='lazy'; iframe.referrerPolicy='no-referrer-when-downgrade';
-  document.getElementById('mapBlock').appendChild(iframe);
+
+  const mapStops = routeProps.slice(0, 8);
+
+  // Build markers: blue pin for zip center, numbered pins for each stop
+  const centerMarker = 'color:blue|label:S|'+lead.lat+','+lead.lng;
+  const stopMarkers  = mapStops.map((p,i) =>
+    'color:red|label:'+(i+1)+'|'+encodeURIComponent(p.a)
+  ).join('&markers=');
+
+  // Path connecting all stops in order
+  const path = [lead.lat+','+lead.lng]
+    .concat(mapStops.map(p => p.la && p.lo ? p.la+','+p.lo : encodeURIComponent(p.a)))
+    .join('|');
+
+  const src = 'https://maps.googleapis.com/maps/api/staticmap?size=860x380&scale=2' +
+    '&markers='+encodeURIComponent(centerMarker)+
+    '&markers='+stopMarkers+
+    '&path=color:0x1A9E8C|weight:4|'+path+
+    '&key='+apiKey;
+
+  const img = document.createElement('img');
+  img.src = src;
+  img.style.cssText = 'width:100%;height:380px;object-fit:cover;display:block;';
+  img.alt = 'Route map';
+  document.getElementById('mapBlock').appendChild(img);
 }
 
 // ── RENDER ROUTE STOPS ───────────────────────────────────────────────────
