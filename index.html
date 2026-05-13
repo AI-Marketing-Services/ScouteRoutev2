@@ -49,7 +49,7 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;}
 .section-heading h2{font-size:26px;color:var(--ink);}
 .section-heading-sub{font-size:13px;color:var(--ink-light);}
 .map-block{border-radius:var(--r-lg);overflow:hidden;border:1.5px solid var(--border);box-shadow:var(--shadow-md);margin-bottom:40px;position:relative;background:#e8e0d0;}
-.map-block img{width:100%;height:380px;object-fit:cover;display:block;}
+.map-block iframe{width:100%;height:420px;display:block;border:none;}
 .map-block-label{position:absolute;top:14px;left:14px;background:var(--ink);color:white;font-size:12px;font-weight:600;letter-spacing:0.5px;padding:6px 14px;border-radius:999px;z-index:10;}
 .map-placeholder{height:380px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--paper-2);color:var(--ink-light);gap:10px;font-size:14px;text-align:center;padding:24px;}
 .map-placeholder .map-icon{font-size:40px;}
@@ -367,42 +367,34 @@ function renderMap(data,routeProps){
   const apiKey=window.GMAPS_EMBED_KEY||'';
   if(!apiKey)return;
 
-  // Remove any previously rendered map image/iframe
+  // Clear any previously rendered map (called on every profit input change)
   const block=document.getElementById('mapBlock');
   block.querySelectorAll('img,iframe').forEach(el=>el.remove());
   const ph=document.getElementById('mapPlaceholder');
   if(ph)ph.remove();
 
-  const mapStops=routeProps.slice(0,8);
+  // Use Directions embed — interactive, scrollable, shows real roads.
+  // origin = zip center, destination = last stop, middle stops = waypoints.
+  // Directions embed supports up to 9 waypoints total so we cap at 8 stops.
+  const mapStops   = routeProps.slice(0,8);
+  const origin     = encodeURIComponent((lead.city||'')+' '+(lead.state||'')+' '+lead.zip);
+  const destination= encodeURIComponent(mapStops[mapStops.length-1].a);
+  // All stops except the last become waypoints
+  const waypoints  = mapStops.slice(0,-1).map(p=>encodeURIComponent(p.a)).join('|');
 
-  // Green start marker at zip center, numbered red markers for each stop
-  const centerMarker='color:0x1A9E8C|size:mid|label:S|'+lead.lat+','+lead.lng;
-  const stopMarkers=mapStops.map((p,i)=>'color:red|size:mid|label:'+(i+1)+'|'+encodeURIComponent(p.a)).join('&markers=');
+  const src='https://www.google.com/maps/embed/v1/directions?key='+apiKey
+    +'&origin='+origin
+    +'&destination='+destination
+    +(waypoints?'&waypoints='+waypoints:'')
+    +'&mode=driving';
 
-  // Path: use encoded polyline from Routes API (real roads) if available,
-  // otherwise fall back to straight lines between coordinates.
-  let pathParam;
-  if (data.rp) {
-    pathParam = '&path=color:0x1A9E8Cff|weight:4|enc:' + encodeURIComponent(data.rp);
-  } else {
-    const pathPoints=[lead.lat+','+lead.lng]
-      .concat(mapStops.map(p=>(p.la!=null&&p.lo!=null)?p.la+','+p.lo:encodeURIComponent(p.a)))
-      .join('|');
-    pathParam = '&path=color:0x1A9E8Cff|weight:4|'+pathPoints;
-  }
-
-  const src='https://maps.googleapis.com/maps/api/staticmap'
-    +'?size=860x380&scale=2&maptype=roadmap'
-    +'&markers='+encodeURIComponent(centerMarker)
-    +'&markers='+stopMarkers
-    +pathParam
-    +'&key='+apiKey;
-
-  const img=document.createElement('img');
-  img.src=src;
-  img.style.cssText='width:100%;height:380px;object-fit:cover;display:block;';
-  img.alt='Route map';
-  block.appendChild(img);
+  const iframe=document.createElement('iframe');
+  iframe.src=src;
+  iframe.style.cssText='width:100%;height:420px;display:block;border:none;';
+  iframe.allowFullscreen=true;
+  iframe.loading='lazy';
+  iframe.referrerPolicy='no-referrer-when-downgrade';
+  block.appendChild(iframe);
 }
 
 function renderRouteStops(routeProps,data){
