@@ -25,22 +25,14 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
 html{scroll-behavior:smooth;}
 body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;overflow-x:hidden;}
 h1,h2,h3,h4{font-family:'DM Serif Display',serif;}
-
-/* TOPBAR */
 .topbar{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--ink);height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;box-shadow:0 2px 20px rgba(0,0,0,0.3);}
 .topbar img{height:34px;}
 .topbar-badge{font-size:11px;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.55);}
-
-/* MAIN */
 .main{max-width:900px;margin:0 auto;padding:80px 20px 80px;}
-
-/* HERO */
 .hero{padding:48px 0 36px;border-bottom:1px solid var(--border);margin-bottom:40px;animation:fadeUp 0.5s ease forwards;}
 .hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--teal-mid);margin-bottom:14px;}
 .hero h1{font-size:clamp(28px,5vw,44px);color:var(--ink);line-height:1.1;margin-bottom:14px;}
 .hero-desc{font-size:16px;color:var(--ink-mid);line-height:1.65;max-width:620px;}
-
-/* PROFIT INPUT */
 .profit-block{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:28px 32px;margin-bottom:40px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;box-shadow:var(--shadow-sm);}
 .profit-block-left{flex:1;min-width:200px;}
 .profit-block-label{font-family:'DM Serif Display',serif;font-size:18px;color:var(--ink);margin-bottom:4px;}
@@ -53,20 +45,14 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;}
 .profit-rec{background:var(--teal-light);border-radius:var(--r);padding:14px 22px;text-align:center;flex-shrink:0;}
 .profit-rec-num{font-family:'DM Serif Display',serif;font-size:40px;color:var(--teal);line-height:1;}
 .profit-rec-label{font-size:12px;color:var(--teal);margin-top:4px;font-weight:600;}
-
-/* SECTION HEADING */
 .section-heading{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;}
 .section-heading h2{font-size:26px;color:var(--ink);}
 .section-heading-sub{font-size:13px;color:var(--ink-light);}
-
-/* MAP */
 .map-block{border-radius:var(--r-lg);overflow:hidden;border:1.5px solid var(--border);box-shadow:var(--shadow-md);margin-bottom:40px;position:relative;background:#e8e0d0;}
-.map-block iframe{width:100%;height:380px;display:block;border:none;}
+.map-block img{width:100%;height:380px;object-fit:cover;display:block;}
 .map-block-label{position:absolute;top:14px;left:14px;background:var(--ink);color:white;font-size:12px;font-weight:600;letter-spacing:0.5px;padding:6px 14px;border-radius:999px;z-index:10;}
 .map-placeholder{height:380px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--paper-2);color:var(--ink-light);gap:10px;font-size:14px;text-align:center;padding:24px;}
 .map-placeholder .map-icon{font-size:40px;}
-
-/* ROUTE STOPS */
 .route-stops{display:flex;flex-direction:column;gap:0;margin-bottom:40px;}
 .route-stop{display:flex;align-items:stretch;gap:0;animation:fadeUp 0.4s ease forwards;opacity:0;}
 .route-stop:nth-child(1){animation-delay:0.05s;}
@@ -97,13 +83,9 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;}
 .stop-rev{text-align:right;flex-shrink:0;}
 .stop-rev-num{font-family:'DM Serif Display',serif;font-size:22px;color:var(--teal);line-height:1;}
 .stop-rev-label{font-size:11px;color:var(--ink-light);margin-top:2px;}
-
-/* DRIVE BAR */
 .drive-bar{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--ink-mid);}
 .drive-bar-track{flex:1;height:4px;background:var(--paper-2);border-radius:99px;overflow:hidden;}
 .drive-bar-fill{height:100%;border-radius:99px;background:var(--teal-mid);transition:width 0.6s ease;}
-
-/* CATEGORY SECTIONS */
 .cat-section{margin-bottom:44px;}
 .cat-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--border);}
 .cat-header-icon{font-size:22px;}
@@ -120,8 +102,6 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;}
 .prop-card-addr{font-size:12px;color:var(--ink-light);margin-bottom:8px;}
 .prop-card-rev{font-size:13px;font-weight:600;color:var(--teal);}
 .prop-card-meta{font-size:11px;color:var(--ink-light);margin-top:4px;}
-
-/* PROJECTION */
 .proj-section{margin-top:48px;animation:fadeUp 0.4s ease forwards;}
 .proj-banner{background:var(--ink);border-radius:var(--r-lg);padding:36px 40px;color:white;margin-bottom:20px;position:relative;overflow:hidden;}
 .proj-banner::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.03);}
@@ -153,42 +133,32 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;}
 .cow-val{font-family:'DM Serif Display',serif;font-size:46px;color:var(--red);line-height:1;margin:8px 0;}
 .cow-sub{font-size:13px;color:var(--ink-mid);}
 .disclaimer{font-size:12px;color:var(--ink-light);line-height:1.6;padding:14px 18px;background:var(--paper-2);border-radius:var(--r);border:1px solid var(--border);}
-
-/* EMPTY STATE */
 .empty-state{text-align:center;padding:80px 24px;}
 .empty-state h2{font-size:24px;color:var(--ink);margin-bottom:10px;}
 .empty-state p{font-size:14px;color:var(--ink-mid);line-height:1.6;}
-
 .hidden{display:none!important;}
-
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-@media(max-width:600px){
-  .profit-block{flex-direction:column;}
-  .main{padding:76px 14px 60px;}
-  .proj-banner{padding:24px 20px;}
-}
+@media(max-width:600px){.profit-block{flex-direction:column;}.main{padding:76px 14px 60px;}.proj-banner{padding:24px 20px;}}
 </style>
 </head>
 <body>
 
 <div class="topbar">
   <img src="https://github.com/AI-Marketing-Services/SLFU_jason/raw/main/VP%20H%20White%20color.png" alt="VendingPreneur">
-  <div class="topbar-badge">🔒 Your custom route</div>
+  <div class="topbar-badge">&#x1F512; Your custom route</div>
 </div>
 
 <div class="main">
-
   <div class="empty-state" id="emptyState" style="display:none;">
     <h2>No report data found</h2>
     <p>This link appears to be missing its data payload.<br>Please contact your VendingPreneur rep for a working link.</p>
   </div>
 
   <div id="mainContent" class="hidden">
-
     <div class="hero">
       <div class="hero-eyebrow" id="heroEyebrow">Your Custom Vending Route</div>
-      <h1 id="heroTitle">—</h1>
-      <p class="hero-desc" id="heroDesc">—</p>
+      <h1 id="heroTitle">&#8212;</h1>
+      <p class="hero-desc" id="heroDesc">&#8212;</p>
     </div>
 
     <div class="profit-block">
@@ -203,22 +173,21 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;}
         </div>
       </div>
       <div class="profit-rec" id="profitRec" style="display:none;">
-        <div class="profit-rec-num" id="recMachineNum">—</div>
+        <div class="profit-rec-num" id="recMachineNum">&#8212;</div>
         <div class="profit-rec-label">machines recommended</div>
       </div>
     </div>
 
     <div id="resultsBlock" class="hidden">
-
       <div class="section-heading">
         <h2>Route Map</h2>
         <span class="section-heading-sub" id="mapSubLabel"></span>
       </div>
       <div class="map-block" id="mapBlock">
-        <div class="map-block-label" id="mapLabel">📍 Loading…</div>
+        <div class="map-block-label" id="mapLabel">&#x1F4CD; Loading&#x2026;</div>
         <div class="map-placeholder" id="mapPlaceholder">
-          <div class="map-icon">🗺️</div>
-          <div><strong>Map coming soon.</strong><br>Set <code>window.GMAPS_EMBED_KEY</code> in this file to show a live map with all stops pinned.</div>
+          <div class="map-icon">&#x1F5FA;&#xFE0F;</div>
+          <div><strong>Map coming soon.</strong><br>Set <code>window.GMAPS_EMBED_KEY</code> in this file to show a live map.</div>
         </div>
       </div>
 
@@ -230,32 +199,30 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;}
 
       <div class="section-heading" style="margin-top:48px;">
         <h2>All Nearby Properties</h2>
-        <span class="section-heading-sub">By category — closest 2–3 per type selected for your route</span>
+        <span class="section-heading-sub">By category &#x2014; closest 2&#x2013;3 per type selected for your route</span>
       </div>
       <div id="categorySections"></div>
 
       <div class="proj-section" id="projSection"></div>
-
     </div>
   </div>
 </div>
 
 <script>
-// ── LOOKUPS ──────────────────────────────────────────────────────────────
 const PROPERTY_LABELS = {
   'apartment':'Apartment','office-gov':'Office / Gov','gym':'Gym / Rec Center',
   'manufacturing-warehouse':'Manufacturing / Warehouse','medical':'Medical / Hospital',
   'school':'School','hotel':'Hotel','other':'Other',
 };
 const CATEGORY_META = {
-  'apartment':               {icon:'🏢',label:'Apartments'},
-  'gym':                     {icon:'💪',label:'Gyms & Rec Centers'},
-  'medical':                 {icon:'🏥',label:'Medical / Hospital'},
-  'office-gov':              {icon:'🏛️',label:'Offices & Gov'},
-  'manufacturing-warehouse': {icon:'🏭',label:'Industrial'},
-  'school':                  {icon:'🎓',label:'Schools'},
-  'hotel':                   {icon:'🏨',label:'Hotels'},
-  'other':                   {icon:'📍',label:'Other'},
+  'apartment':{icon:'&#x1F3E2;',label:'Apartments'},
+  'gym':{icon:'&#x1F4AA;',label:'Gyms & Rec Centers'},
+  'medical':{icon:'&#x1F3E5;',label:'Medical / Hospital'},
+  'office-gov':{icon:'&#x1F3DB;&#xFE0F;',label:'Offices & Gov'},
+  'manufacturing-warehouse':{icon:'&#x1F3ED;',label:'Industrial'},
+  'school':{icon:'&#x1F393;',label:'Schools'},
+  'hotel':{icon:'&#x1F3E8;',label:'Hotels'},
+  'other':{icon:'&#x1F4CD;',label:'Other'},
 };
 const CATEGORY_ORDER = ['apartment','gym','medical','office-gov','manufacturing-warehouse','school','hotel','other'];
 const DEFAULT_DENOM = {
@@ -319,294 +286,234 @@ const PROP_LOC_AVG_DPM = {
 const FALLBACK_DPM = 6.0;
 const PROFIT_PER_MACHINE = 600;
 
-function lookupBlendedDPM(propVal, machVal, densityKey) {
-  const b = BUCKET_NAME_MAP[propVal]||'Other';
-  const m = MACH_NAME_MAP[machVal]||'';
-  const l = DENSITY_NAME_MAP[densityKey]||'City (<1M Population)';
-  const key = b+'|'+l+'|'+m;
-  if (ROUTE_BLENDED_DPM[key]) return ROUTE_BLENDED_DPM[key];
-  const plKey = b+'|'+l;
-  if (PROP_LOC_AVG_DPM[plKey]) return PROP_LOC_AVG_DPM[plKey];
-  for (const k in ROUTE_BLENDED_DPM) {
-    if (k.startsWith(b+'|') && k.endsWith('|'+m)) return ROUTE_BLENDED_DPM[k];
-  }
+function lookupBlendedDPM(propVal,machVal,densityKey){
+  const b=BUCKET_NAME_MAP[propVal]||'Other',m=MACH_NAME_MAP[machVal]||'',l=DENSITY_NAME_MAP[densityKey]||'City (<1M Population)';
+  const key=b+'|'+l+'|'+m;
+  if(ROUTE_BLENDED_DPM[key])return ROUTE_BLENDED_DPM[key];
+  const plKey=b+'|'+l;
+  if(PROP_LOC_AVG_DPM[plKey])return PROP_LOC_AVG_DPM[plKey];
+  for(const k in ROUTE_BLENDED_DPM){if(k.startsWith(b+'|')&&k.endsWith('|'+m))return ROUTE_BLENDED_DPM[k];}
   return FALLBACK_DPM;
 }
-function getMonthlyRev(prop, density) {
-  const machine = DEFAULT_MACHINE_BY_PROP[prop.t]||'snacks-drinks-ai';
-  const units   = DEFAULT_DENOM[prop.t]||150;
-  let dpm = lookupBlendedDPM(prop.t, machine, density);
-  if (density === 'city') dpm *= 1.15;
-  return dpm * units;
+function getMonthlyRev(prop,density){
+  const machine=DEFAULT_MACHINE_BY_PROP[prop.t]||'snacks-drinks-ai',units=DEFAULT_DENOM[prop.t]||150;
+  let dpm=lookupBlendedDPM(prop.t,machine,density);
+  if(density==='city')dpm*=1.15;
+  return dpm*units;
 }
 
-// ── STATE ────────────────────────────────────────────────────────────────
-const state = { desiredProfit:null, recommendedMachines:null, leadData:null, routeProperties:[] };
+const state={desiredProfit:null,recommendedMachines:null,leadData:null,routeProperties:[]};
 
-// ── DECODE URL ───────────────────────────────────────────────────────────
-// Property coords are stored as p.la (lat) and p.lo (lng)
-function decodeFromURL() {
-  const d = new URLSearchParams(window.location.search).get('d');
-  if (!d) return null;
-  try {
-    const json = LZString.decompressFromEncodedURIComponent(d);
-    if (!json) return null;
-    const data = JSON.parse(json);
-    if (!data||data.v!==1||!data.lead||!data.density||!Array.isArray(data.properties)) return null;
+function decodeFromURL(){
+  const d=new URLSearchParams(window.location.search).get('d');
+  if(!d)return null;
+  try{
+    const json=LZString.decompressFromEncodedURIComponent(d);
+    if(!json)return null;
+    const data=JSON.parse(json);
+    if(!data||data.v!==1||!data.lead||!data.density||!Array.isArray(data.properties))return null;
     return data;
-  } catch(e) { console.error('Decode failed:',e); return null; }
+  }catch(e){console.error('Decode failed:',e);return null;}
 }
 
-// ── ROUTE SELECTION ──────────────────────────────────────────────────────
-function selectRouteProperties(properties, density, targetCount) {
-  const groups = {};
-  properties.forEach(p => { if (!groups[p.t]) groups[p.t]=[]; groups[p.t].push(p); });
-  Object.keys(groups).forEach(t => { groups[t].sort((a,b) => getMonthlyRev(b,density)-getMonthlyRev(a,density)); });
-  const selected = [];
-  const catKeys  = CATEGORY_ORDER.filter(k => groups[k]&&groups[k].length>0);
-  catKeys.forEach(k => { if (selected.length<targetCount) selected.push({...groups[k][0]}); });
-  for (let slot=1; slot<=2; slot++) {
-    catKeys.forEach(k => { if (selected.length>=targetCount) return; if (groups[k][slot]) selected.push({...groups[k][slot]}); });
+function selectRouteProperties(properties,density,targetCount){
+  const groups={};
+  properties.forEach(p=>{if(!groups[p.t])groups[p.t]=[];groups[p.t].push(p);});
+  Object.keys(groups).forEach(t=>{groups[t].sort((a,b)=>getMonthlyRev(b,density)-getMonthlyRev(a,density));});
+  const selected=[],catKeys=CATEGORY_ORDER.filter(k=>groups[k]&&groups[k].length>0);
+  catKeys.forEach(k=>{if(selected.length<targetCount)selected.push({...groups[k][0]});});
+  for(let slot=1;slot<=2;slot++){
+    catKeys.forEach(k=>{if(selected.length>=targetCount)return;if(groups[k][slot])selected.push({...groups[k][slot]});});
   }
-  return selected.slice(0, targetCount);
+  return selected.slice(0,targetCount);
 }
 
-// ── DRIVE TIME ───────────────────────────────────────────────────────────
-function haversineKm(lat1,lng1,lat2,lng2) {
-  const R=6371, dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180;
+function haversineKm(lat1,lng1,lat2,lng2){
+  const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180;
   const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
-function estimateDriveMin(distKm, density) {
+function estimateDriveMin(distKm,density){
   const speeds={major:25,city:35,suburban:50,rural:70};
-  return Math.max(3, Math.round((distKm/(speeds[density]||40))*60));
+  return Math.max(3,Math.round((distKm/(speeds[density]||40))*60));
 }
-// p.la / p.lo are the property coords from the v2 payload
-function driveMinBetween(fromLat, fromLng, toP, density, fallbackIdx) {
-  if (fromLat!=null && toP.la!=null) return estimateDriveMin(haversineKm(fromLat,fromLng,toP.la,toP.lo), density);
-  return 5 + fallbackIdx*4 + Math.floor(Math.random()*4);
+function driveMinBetween(fromLat,fromLng,toP,density,fallbackIdx){
+  if(fromLat!=null&&toP.la!=null)return estimateDriveMin(haversineKm(fromLat,fromLng,toP.la,toP.lo),density);
+  return 5+fallbackIdx*4+Math.floor(Math.random()*4);
 }
 
-// ── RENDER HEADER ────────────────────────────────────────────────────────
-function renderHeader(data) {
-  const {lead,density,properties} = data;
-  const cs = [lead.city,lead.state].filter(Boolean).join(', ');
-  const cats = CATEGORY_ORDER.filter(c => properties.some(p => p.t===c)).length;
-  document.getElementById('heroEyebrow').textContent = 'Custom Route — '+(cs||lead.zip);
-  document.getElementById('heroTitle').textContent   = 'Your vending opportunities near '+(cs||lead.zip);
-  document.getElementById('heroDesc').innerHTML =
+function renderHeader(data){
+  const{lead,properties}=data;
+  const cs=[lead.city,lead.state].filter(Boolean).join(', ');
+  const cats=CATEGORY_ORDER.filter(c=>properties.some(p=>p.t===c)).length;
+  document.getElementById('heroEyebrow').textContent='Custom Route \u2014 '+(cs||lead.zip);
+  document.getElementById('heroTitle').textContent='Your vending opportunities near '+(cs||lead.zip);
+  document.getElementById('heroDesc').innerHTML=
     'We found <strong>'+properties.length+' qualifying properties</strong> within 15 miles of '+
-    (cs ? cs+' ('+lead.zip+')' : lead.zip)+' across '+cats+
+    (cs?cs+' ('+lead.zip+')':lead.zip)+' across '+cats+
     ' property categories. Enter your target profit below to see a custom route and projected ROI.';
 }
 
 // ── RENDER MAP ───────────────────────────────────────────────────────────
-function renderMap(data, routeProps) {
-  const lead = data.lead;
-  const cs   = [lead.city,lead.state].filter(Boolean).join(', ');
-  document.getElementById('mapLabel').textContent    = '📍 '+(cs||lead.zip);
-  document.getElementById('mapSubLabel').textContent = (cs||lead.zip)+' — '+routeProps.length+' stops';
-  const apiKey = window.GMAPS_EMBED_KEY||'';
-  if (!apiKey) return;
-  const ph = document.getElementById('mapPlaceholder');
-  if (ph) ph.remove();
+// Uses Static Maps API — single image, all pins + route path.
+// Requires "Maps Static API" enabled on the same key as Places.
+// Called on every profit input change — clears previous map first.
+function renderMap(data,routeProps){
+  const lead=data.lead;
+  const cs=[lead.city,lead.state].filter(Boolean).join(', ');
+  document.getElementById('mapLabel').textContent='\u{1F4CD} '+(cs||lead.zip);
+  document.getElementById('mapSubLabel').textContent=(cs||lead.zip)+' \u2014 '+routeProps.length+' stops';
 
-  const mapStops = routeProps.slice(0, 8);
+  const apiKey=window.GMAPS_EMBED_KEY||'';
+  if(!apiKey)return;
 
-  // Build markers: blue pin for zip center, numbered pins for each stop
-  const centerMarker = 'color:blue|label:S|'+lead.lat+','+lead.lng;
-  const stopMarkers  = mapStops.map((p,i) =>
-    'color:red|label:'+(i+1)+'|'+encodeURIComponent(p.a)
-  ).join('&markers=');
+  // Remove any previously rendered map image/iframe
+  const block=document.getElementById('mapBlock');
+  block.querySelectorAll('img,iframe').forEach(el=>el.remove());
+  const ph=document.getElementById('mapPlaceholder');
+  if(ph)ph.remove();
 
-  // Path connecting all stops in order
-  const path = [lead.lat+','+lead.lng]
-    .concat(mapStops.map(p => p.la && p.lo ? p.la+','+p.lo : encodeURIComponent(p.a)))
+  const mapStops=routeProps.slice(0,8);
+
+  // Green start marker at zip center, numbered red markers for each stop
+  const centerMarker='color:0x1A9E8C|size:mid|label:S|'+lead.lat+','+lead.lng;
+  const stopMarkers=mapStops.map((p,i)=>'color:red|size:mid|label:'+(i+1)+'|'+encodeURIComponent(p.a)).join('&markers=');
+
+  // Path: use lat/lng coords (p.la, p.lo) where available, fall back to address
+  const pathPoints=[lead.lat+','+lead.lng]
+    .concat(mapStops.map(p=>(p.la!=null&&p.lo!=null)?p.la+','+p.lo:encodeURIComponent(p.a)))
     .join('|');
 
-  const src = 'https://maps.googleapis.com/maps/api/staticmap?size=860x380&scale=2' +
-    '&markers='+encodeURIComponent(centerMarker)+
-    '&markers='+stopMarkers+
-    '&path=color:0x1A9E8C|weight:4|'+path+
-    '&key='+apiKey;
+  const src='https://maps.googleapis.com/maps/api/staticmap'
+    +'?size=860x380&scale=2&maptype=roadmap'
+    +'&markers='+encodeURIComponent(centerMarker)
+    +'&markers='+stopMarkers
+    +'&path=color:0x1A9E8Cff|weight:4|'+pathPoints
+    +'&key='+apiKey;
 
-  const img = document.createElement('img');
-  img.src = src;
-  img.style.cssText = 'width:100%;height:380px;object-fit:cover;display:block;';
-  img.alt = 'Route map';
-  document.getElementById('mapBlock').appendChild(img);
+  const img=document.createElement('img');
+  img.src=src;
+  img.style.cssText='width:100%;height:380px;object-fit:cover;display:block;';
+  img.alt='Route map';
+  block.appendChild(img);
 }
 
-// ── RENDER ROUTE STOPS ───────────────────────────────────────────────────
-function renderRouteStops(routeProps, data) {
-  const density = data.density;
-  const lead    = data.lead;
-  let totalDrive = 0;
-  routeProps.forEach((p,i) => {
-    const fromLat = i===0 ? lead.lat : (routeProps[i-1].la!=null ? routeProps[i-1].la : lead.lat);
-    const fromLng = i===0 ? lead.lng : (routeProps[i-1].lo!=null ? routeProps[i-1].lo : lead.lng);
-    totalDrive += driveMinBetween(fromLat, fromLng, p, density, i);
+function renderRouteStops(routeProps,data){
+  const density=data.density,lead=data.lead;
+  let totalDrive=0;
+  routeProps.forEach((p,i)=>{
+    const fromLat=i===0?lead.lat:(routeProps[i-1].la!=null?routeProps[i-1].la:lead.lat);
+    const fromLng=i===0?lead.lng:(routeProps[i-1].lo!=null?routeProps[i-1].lo:lead.lng);
+    totalDrive+=driveMinBetween(fromLat,fromLng,p,density,i);
   });
-  document.getElementById('routeSubLabel').textContent = routeProps.length+'-stop route · ~'+totalDrive+' min total drive';
-
-  document.getElementById('routeStops').innerHTML = routeProps.map((p,i) => {
-    const rev       = getMonthlyRev(p, density);
-    const machine   = DEFAULT_MACHINE_BY_PROP[p.t]||'snacks-drinks-ai';
-    const machName  = MACH_NAME_MAP[machine]||machine;
-    const typeLabel = PROPERTY_LABELS[p.t]||p.t;
-    const catMeta   = CATEGORY_META[p.t]||{icon:'📍'};
-    const occupants = DEFAULT_DENOM[p.t]||150;
-    const fromLat   = i===0 ? lead.lat : (routeProps[i-1].la!=null ? routeProps[i-1].la : lead.lat);
-    const fromLng   = i===0 ? lead.lng : (routeProps[i-1].lo!=null ? routeProps[i-1].lo : lead.lng);
-    const driveMin  = driveMinBetween(fromLat, fromLng, p, density, i);
-    const driveBarPct = Math.min(100, Math.round((driveMin/25)*100));
-    return `
-      <div class="route-stop">
-        <div class="stop-timeline">
-          <div class="stop-dot${i===0?' start':''}"></div>
-          <div class="stop-line"></div>
-        </div>
-        <div class="stop-card">
-          <div class="stop-card-top">
-            <div class="stop-card-left">
-              <div class="stop-num-badge">Stop ${i+1} · ${catMeta.icon} ${typeLabel}</div>
-              <div class="stop-name">${escHtml(p.n)}</div>
-              <div class="stop-address">${escHtml(p.a)}</div>
-              <div class="stop-tags">
-                <span class="stop-tag machine">${machName}</span>
-                <span class="stop-tag occupants">~${occupants} occupants</span>
-                ${i>0
-                  ? `<span class="stop-tag drive">🚗 ${driveMin} min from prev</span>`
-                  : `<span class="stop-tag drive">🏁 Route start</span>`}
-              </div>
-              ${i>0?`<div class="drive-bar">
-                <span style="white-space:nowrap;font-size:11px;">Drive time</span>
-                <div class="drive-bar-track"><div class="drive-bar-fill" style="width:${driveBarPct}%"></div></div>
-                <span style="white-space:nowrap;font-size:11px;">${driveMin} min</span>
-              </div>`:''}
-            </div>
-            <div class="stop-rev">
-              <div class="stop-rev-num">$${Math.round(rev).toLocaleString()}</div>
-              <div class="stop-rev-label">est. / month</div>
-            </div>
-          </div>
-        </div>
-      </div>`;
+  document.getElementById('routeSubLabel').textContent=routeProps.length+'-stop route \u00b7 ~'+totalDrive+' min total drive';
+  document.getElementById('routeStops').innerHTML=routeProps.map((p,i)=>{
+    const rev=getMonthlyRev(p,density);
+    const machName=MACH_NAME_MAP[DEFAULT_MACHINE_BY_PROP[p.t]||'snacks-drinks-ai']||'Vending';
+    const typeLabel=PROPERTY_LABELS[p.t]||p.t;
+    const catIcon=(CATEGORY_META[p.t]||{icon:'\u{1F4CD}'}).icon;
+    const occupants=DEFAULT_DENOM[p.t]||150;
+    const fromLat=i===0?lead.lat:(routeProps[i-1].la!=null?routeProps[i-1].la:lead.lat);
+    const fromLng=i===0?lead.lng:(routeProps[i-1].lo!=null?routeProps[i-1].lo:lead.lng);
+    const driveMin=driveMinBetween(fromLat,fromLng,p,density,i);
+    const driveBarPct=Math.min(100,Math.round((driveMin/25)*100));
+    return '<div class="route-stop">'
+      +'<div class="stop-timeline"><div class="stop-dot'+(i===0?' start':'')+'"></div><div class="stop-line"></div></div>'
+      +'<div class="stop-card"><div class="stop-card-top"><div class="stop-card-left">'
+      +'<div class="stop-num-badge">Stop '+(i+1)+' \u00b7 '+catIcon+' '+typeLabel+'</div>'
+      +'<div class="stop-name">'+escHtml(p.n)+'</div>'
+      +'<div class="stop-address">'+escHtml(p.a)+'</div>'
+      +'<div class="stop-tags">'
+      +'<span class="stop-tag machine">'+machName+'</span>'
+      +'<span class="stop-tag occupants">~'+occupants+' occupants</span>'
+      +(i>0?'<span class="stop-tag drive">\u{1F697} '+driveMin+' min from prev</span>':'<span class="stop-tag drive">\u{1F3C1} Route start</span>')
+      +'</div>'
+      +(i>0?'<div class="drive-bar"><span style="white-space:nowrap;font-size:11px;">Drive time</span><div class="drive-bar-track"><div class="drive-bar-fill" style="width:'+driveBarPct+'%"></div></div><span style="white-space:nowrap;font-size:11px;">'+driveMin+' min</span></div>':'')
+      +'</div>'
+      +'<div class="stop-rev"><div class="stop-rev-num">$'+Math.round(rev).toLocaleString()+'</div><div class="stop-rev-label">est. / month</div></div>'
+      +'</div></div></div>';
   }).join('');
 }
 
-// ── RENDER CATEGORIES ────────────────────────────────────────────────────
-function renderCategories(allProps, routeProps, data) {
-  const density       = data.density;
-  const selectedNames = new Set(routeProps.map(p => p.n));
-  const groups = {};
-  allProps.forEach(p => { if (!groups[p.t]) groups[p.t]=[]; groups[p.t].push(p); });
-  document.getElementById('categorySections').innerHTML = CATEGORY_ORDER
-    .filter(t => groups[t]&&groups[t].length>0)
-    .map(t => {
-      const meta  = CATEGORY_META[t]||{icon:'📍',label:t};
-      const props = groups[t].sort((a,b) => getMonthlyRev(b,density)-getMonthlyRev(a,density));
-      const cards = props.map(p => {
-        const rev = getMonthlyRev(p,density);
-        const sel = selectedNames.has(p.n);
-        return `<div class="prop-card${sel?' selected':''}">
-          <div class="prop-card-selected-badge">On Route</div>
-          <div class="prop-card-name">${escHtml(p.n)}</div>
-          <div class="prop-card-addr">${escHtml(p.a)}</div>
-          <div class="prop-card-rev">~$${Math.round(rev).toLocaleString()}/mo projected</div>
-          <div class="prop-card-meta">~${DEFAULT_DENOM[p.t]||150} occupants · ${MACH_NAME_MAP[DEFAULT_MACHINE_BY_PROP[p.t]]||'Vending'}</div>
-        </div>`;
+function renderCategories(allProps,routeProps,data){
+  const density=data.density,selectedNames=new Set(routeProps.map(p=>p.n)),groups={};
+  allProps.forEach(p=>{if(!groups[p.t])groups[p.t]=[];groups[p.t].push(p);});
+  document.getElementById('categorySections').innerHTML=CATEGORY_ORDER
+    .filter(t=>groups[t]&&groups[t].length>0)
+    .map(t=>{
+      const meta=CATEGORY_META[t]||{icon:'\u{1F4CD}',label:t};
+      const props=groups[t].sort((a,b)=>getMonthlyRev(b,density)-getMonthlyRev(a,density));
+      const cards=props.map(p=>{
+        const rev=getMonthlyRev(p,density),sel=selectedNames.has(p.n);
+        return '<div class="prop-card'+(sel?' selected':'')+'"><div class="prop-card-selected-badge">On Route</div>'
+          +'<div class="prop-card-name">'+escHtml(p.n)+'</div>'
+          +'<div class="prop-card-addr">'+escHtml(p.a)+'</div>'
+          +'<div class="prop-card-rev">~$'+Math.round(rev).toLocaleString()+'/mo projected</div>'
+          +'<div class="prop-card-meta">~'+(DEFAULT_DENOM[p.t]||150)+' occupants \u00b7 '+(MACH_NAME_MAP[DEFAULT_MACHINE_BY_PROP[p.t]]||'Vending')+'</div>'
+          +'</div>';
       }).join('');
-      return `<div class="cat-section">
-        <div class="cat-header">
-          <div class="cat-header-icon">${meta.icon}</div>
-          <div class="cat-header-name">${meta.label}</div>
-          <div class="cat-header-count">${props.length} location${props.length!==1?'s':''}</div>
-        </div>
-        <div class="cat-cards">${cards}</div>
-      </div>`;
+      return '<div class="cat-section"><div class="cat-header">'
+        +'<div class="cat-header-icon">'+meta.icon+'</div>'
+        +'<div class="cat-header-name">'+meta.label+'</div>'
+        +'<div class="cat-header-count">'+props.length+' location'+(props.length!==1?'s':'')+'</div>'
+        +'</div><div class="cat-cards">'+cards+'</div></div>';
     }).join('');
 }
 
-// ── RENDER PROJECTION ────────────────────────────────────────────────────
-function renderProjection(routeProps, data) {
-  const density = data.density;
-  const $$ = v => '$'+Math.round(v).toLocaleString();
-  let totalMonthlyRev = 0;
-  routeProps.forEach(p => { totalMonthlyRev += getMonthlyRev(p,density); });
-  if (density==='city') totalMonthlyRev *= 1.15;
-  totalMonthlyRev = Math.round(totalMonthlyRev);
-  const mc  = routeProps.length;
-  const ar  = totalMonthlyRev*12;
-  const cogs = ar*0.35, saas = ar*0.105, df = mc*25*12, ins = 100*12;
-  const ap   = ar-cogs-saas-df-ins;
-  const mp   = ap/12;
-  const av   = ar*1.1;
-  const dn   = DENSITY_NAME_MAP[density]||'City';
-  document.getElementById('projSection').innerHTML = `
-    <div class="proj-banner">
-      <div class="proj-banner-eyebrow">Your Route Projection</div>
-      <h2>${mc}-Machine Route — ${dn} Market</h2>
-      <div class="proj-banner-sub">${mc} stops · based on property type &amp; market data from 500+ locations</div>
-    </div>
-    <div class="proj-numbers">
-      <div class="proj-num-card">
-        <div class="proj-num-label">Monthly Take-Home</div>
-        <div class="proj-num-val">${$$(mp)}</div>
-        <div class="proj-num-sub">per month</div>
-      </div>
-      <div class="proj-num-card accent">
-        <div class="proj-num-label">Yearly Take-Home</div>
-        <div class="proj-num-val">${$$(ap)}</div>
-        <div class="proj-num-sub">per year</div>
-      </div>
-      <div class="proj-num-card">
-        <div class="proj-num-label">Route Asset Value</div>
-        <div class="proj-num-val">${$$(av)}</div>
-        <div class="proj-num-sub">estimated resale</div>
-      </div>
-    </div>
-    <div class="proj-breakdown">
-      <div class="proj-row"><div class="proj-row-label">Annual Gross Revenue</div><div class="proj-row-val pos">${$$(ar)}</div></div>
-      <div class="proj-row"><div class="proj-row-label">Cost of Goods (35%)</div><div class="proj-row-val neg">−${$$(cogs)}</div></div>
-      <div class="proj-row"><div class="proj-row-label">SaaS Fees (10.5%)</div><div class="proj-row-val neg">−${$$(saas)}</div></div>
-      <div class="proj-row"><div class="proj-row-label">Data Fees ($25/mo × ${mc})</div><div class="proj-row-val neg">−${$$(df)}</div></div>
-      <div class="proj-row"><div class="proj-row-label">Insurance ($100/mo)</div><div class="proj-row-val neg">−${$$(ins)}</div></div>
-      <div class="proj-row total"><div class="proj-row-label">Annual Take-Home Profit</div><div class="proj-row-val pos">${$$(ap)}</div></div>
-    </div>
-    <div class="cost-of-waiting">
-      <div class="cow-eyebrow">⏰ Cost of Waiting</div>
-      <div style="font-size:15px;color:var(--ink-mid);">Each month you wait is costing you up to</div>
-      <div class="cow-val">${$$(mp)}</div>
-      <div class="cow-sub">in potential monthly take-home profit</div>
-    </div>
-    <div class="disclaimer">
-      <strong>Disclaimer:</strong> Projections are estimates based on VendingPreneur member data across 500+ locations.
-      Actual results depend on location quality, product mix, machine type, and operator effort. Does not include startup costs.
-    </div>`;
+function renderProjection(routeProps,data){
+  const density=data.density,$$=v=>'$'+Math.round(v).toLocaleString();
+  let totalMonthlyRev=0;
+  routeProps.forEach(p=>{totalMonthlyRev+=getMonthlyRev(p,density);});
+  if(density==='city')totalMonthlyRev*=1.15;
+  totalMonthlyRev=Math.round(totalMonthlyRev);
+  const mc=routeProps.length,ar=totalMonthlyRev*12;
+  const cogs=ar*0.35,saas=ar*0.105,df=mc*25*12,ins=100*12;
+  const ap=ar-cogs-saas-df-ins,mp=ap/12,av=ar*1.1;
+  const dn=DENSITY_NAME_MAP[density]||'City';
+  document.getElementById('projSection').innerHTML=
+    '<div class="proj-banner"><div class="proj-banner-eyebrow">Your Route Projection</div>'
+    +'<h2>'+mc+'-Machine Route \u2014 '+dn+' Market</h2>'
+    +'<div class="proj-banner-sub">'+mc+' stops \u00b7 based on property type &amp; market data from 500+ locations</div></div>'
+    +'<div class="proj-numbers">'
+    +'<div class="proj-num-card"><div class="proj-num-label">Monthly Take-Home</div><div class="proj-num-val">'+$$(mp)+'</div><div class="proj-num-sub">per month</div></div>'
+    +'<div class="proj-num-card accent"><div class="proj-num-label">Yearly Take-Home</div><div class="proj-num-val">'+$$(ap)+'</div><div class="proj-num-sub">per year</div></div>'
+    +'<div class="proj-num-card"><div class="proj-num-label">Route Asset Value</div><div class="proj-num-val">'+$$(av)+'</div><div class="proj-num-sub">estimated resale</div></div>'
+    +'</div>'
+    +'<div class="proj-breakdown">'
+    +'<div class="proj-row"><div class="proj-row-label">Annual Gross Revenue</div><div class="proj-row-val pos">'+$$(ar)+'</div></div>'
+    +'<div class="proj-row"><div class="proj-row-label">Cost of Goods (35%)</div><div class="proj-row-val neg">\u2212'+$$(cogs)+'</div></div>'
+    +'<div class="proj-row"><div class="proj-row-label">SaaS Fees (10.5%)</div><div class="proj-row-val neg">\u2212'+$$(saas)+'</div></div>'
+    +'<div class="proj-row"><div class="proj-row-label">Data Fees ($25/mo \u00d7 '+mc+')</div><div class="proj-row-val neg">\u2212'+$$(df)+'</div></div>'
+    +'<div class="proj-row"><div class="proj-row-label">Insurance ($100/mo)</div><div class="proj-row-val neg">\u2212'+$$(ins)+'</div></div>'
+    +'<div class="proj-row total"><div class="proj-row-label">Annual Take-Home Profit</div><div class="proj-row-val pos">'+$$(ap)+'</div></div>'
+    +'</div>'
+    +'<div class="cost-of-waiting"><div class="cow-eyebrow">\u23F0 Cost of Waiting</div>'
+    +'<div style="font-size:15px;color:var(--ink-mid);">Each month you wait is costing you up to</div>'
+    +'<div class="cow-val">'+$$(mp)+'</div>'
+    +'<div class="cow-sub">in potential monthly take-home profit</div></div>'
+    +'<div class="disclaimer"><strong>Disclaimer:</strong> Projections are estimates based on VendingPreneur member data across 500+ locations. Actual results depend on location quality, product mix, machine type, and operator effort. Does not include startup costs.</div>';
 }
 
-// ── INPUT HANDLING ───────────────────────────────────────────────────────
-function formatProfit(input) {
-  const digits = input.value.replace(/[^0-9]/g,'');
-  if (!digits) { input.value=''; state.desiredProfit=null; return; }
-  state.desiredProfit = parseInt(digits,10);
-  input.value = state.desiredProfit.toLocaleString();
+function formatProfit(input){
+  const digits=input.value.replace(/[^0-9]/g,'');
+  if(!digits){input.value='';state.desiredProfit=null;return;}
+  state.desiredProfit=parseInt(digits,10);
+  input.value=state.desiredProfit.toLocaleString();
 }
-function onInputChange() {
-  if (!state.desiredProfit||state.desiredProfit<=0) {
+function onInputChange(){
+  if(!state.desiredProfit||state.desiredProfit<=0){
     document.getElementById('profitRec').style.display='none';
     document.getElementById('resultsBlock').classList.add('hidden');
-    state.recommendedMachines=null; scheduleCapture(); return;
+    state.recommendedMachines=null;scheduleCapture();return;
   }
-  const count  = Math.max(1, Math.round(state.desiredProfit/PROFIT_PER_MACHINE));
-  const target = Math.min(count,8);
-  state.recommendedMachines = count;
+  const count=Math.max(1,Math.round(state.desiredProfit/PROFIT_PER_MACHINE));
+  const target=Math.min(count,8);
+  state.recommendedMachines=count;
   document.getElementById('profitRec').style.display='block';
   document.getElementById('recMachineNum').textContent=count;
-  const data       = state.leadData;
-  const routeProps = selectRouteProperties(data.properties, data.density, target);
-  state.routeProperties = routeProps;
+  const data=state.leadData;
+  const routeProps=selectRouteProperties(data.properties,data.density,target);
+  state.routeProperties=routeProps;
   renderMap(data,routeProps);
   renderRouteStops(routeProps,data);
   renderCategories(data.properties,routeProps,data);
@@ -615,44 +522,41 @@ function onInputChange() {
   scheduleCapture();
 }
 
-// ── UTIL ─────────────────────────────────────────────────────────────────
-function escHtml(s) {
-  if (s==null) return '';
+function escHtml(s){
+  if(s==null)return'';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── CAPTURE ──────────────────────────────────────────────────────────────
-let _captureTimer=null, _lastCaptureBody=null;
-function scheduleCapture() {
-  if (!state.leadData||!state.leadData.id||!state.leadData.sig) return;
-  if (!state.leadData.wa||!state.desiredProfit) return;
-  if (_captureTimer) clearTimeout(_captureTimer);
-  _captureTimer = setTimeout(sendCapture,500);
+let _captureTimer=null,_lastCaptureBody=null;
+function scheduleCapture(){
+  if(!state.leadData||!state.leadData.id||!state.leadData.sig)return;
+  if(!state.leadData.wa||!state.desiredProfit)return;
+  if(_captureTimer)clearTimeout(_captureTimer);
+  _captureTimer=setTimeout(sendCapture,500);
 }
-function sendCapture() {
-  const data = state.leadData;
-  const url  = new URL(window.location.href);
-  if (state.desiredProfit) url.searchParams.set('p',String(state.desiredProfit));
-  const body = {id:data.id,sig:data.sig,goal1:null,goal2:null,profit:state.desiredProfit||null,machines:state.recommendedMachines||null,completedUrl:url.toString()};
-  const bodyKey = JSON.stringify(body);
-  if (bodyKey===_lastCaptureBody) return;
-  _lastCaptureBody = bodyKey;
+function sendCapture(){
+  const data=state.leadData;
+  const url=new URL(window.location.href);
+  if(state.desiredProfit)url.searchParams.set('p',String(state.desiredProfit));
+  const body={id:data.id,sig:data.sig,goal1:null,goal2:null,profit:state.desiredProfit||null,machines:state.recommendedMachines||null,completedUrl:url.toString()};
+  const bodyKey=JSON.stringify(body);
+  if(bodyKey===_lastCaptureBody)return;
+  _lastCaptureBody=bodyKey;
   fetch(data.wa,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:bodyKey})
-    .catch(e => console.warn('Capture POST failed:',e));
+    .catch(e=>console.warn('Capture POST failed:',e));
 }
 
-// ── INIT ─────────────────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  const data = decodeFromURL();
-  if (!data) { document.getElementById('emptyState').style.display='block'; return; }
-  state.leadData = data;
+window.addEventListener('DOMContentLoaded',()=>{
+  const data=decodeFromURL();
+  if(!data){document.getElementById('emptyState').style.display='block';return;}
+  state.leadData=data;
   document.getElementById('mainContent').classList.remove('hidden');
   renderHeader(data);
-  const p = new URLSearchParams(window.location.search).get('p');
-  if (p) { const input=document.getElementById('fnDesiredProfit'); input.value=p; formatProfit(input); onInputChange(); }
+  const p=new URLSearchParams(window.location.search).get('p');
+  if(p){const input=document.getElementById('fnDesiredProfit');input.value=p;formatProfit(input);onInputChange();}
 });
 </script>
-  <script>
+<script>
   window.GMAPS_EMBED_KEY = 'AIzaSyAFrFlpbAYrEqNVnznEVbEpSsAnKwWcyvY';
 </script>
 </body>
