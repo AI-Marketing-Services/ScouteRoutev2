@@ -379,16 +379,23 @@ function renderMap(data,routeProps){
   const centerMarker='color:0x1A9E8C|size:mid|label:S|'+lead.lat+','+lead.lng;
   const stopMarkers=mapStops.map((p,i)=>'color:red|size:mid|label:'+(i+1)+'|'+encodeURIComponent(p.a)).join('&markers=');
 
-  // Path: use lat/lng coords (p.la, p.lo) where available, fall back to address
-  const pathPoints=[lead.lat+','+lead.lng]
-    .concat(mapStops.map(p=>(p.la!=null&&p.lo!=null)?p.la+','+p.lo:encodeURIComponent(p.a)))
-    .join('|');
+  // Path: use encoded polyline from Routes API (real roads) if available,
+  // otherwise fall back to straight lines between coordinates.
+  let pathParam;
+  if (data.rp) {
+    pathParam = '&path=color:0x1A9E8Cff|weight:4|enc:' + encodeURIComponent(data.rp);
+  } else {
+    const pathPoints=[lead.lat+','+lead.lng]
+      .concat(mapStops.map(p=>(p.la!=null&&p.lo!=null)?p.la+','+p.lo:encodeURIComponent(p.a)))
+      .join('|');
+    pathParam = '&path=color:0x1A9E8Cff|weight:4|'+pathPoints;
+  }
 
   const src='https://maps.googleapis.com/maps/api/staticmap'
     +'?size=860x380&scale=2&maptype=roadmap'
     +'&markers='+encodeURIComponent(centerMarker)
     +'&markers='+stopMarkers
-    +'&path=color:0x1A9E8Cff|weight:4|'+pathPoints
+    +pathParam
     +'&key='+apiKey;
 
   const img=document.createElement('img');
