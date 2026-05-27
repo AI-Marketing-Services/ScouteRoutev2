@@ -380,7 +380,9 @@ function renderRouteStops(routeProps, data) {
   }
 
   const driveMins   = routeProps.map((p,i) => getDriveMin(i, p));
-  const totalDrive  = driveMins.slice(1).reduce((s,v) => s + (v||0), 0);
+  const totalDrive = legDurations
+  ? Math.round(legDurations.reduce((s, v) => s + (v || 0), 0) / 60)
+  : driveMins.slice(1).reduce((s, v) => s + (v || 0), 0);
   const hasRealTimes = legDurations != null;
 
   document.getElementById('routeSubLabel').textContent =
