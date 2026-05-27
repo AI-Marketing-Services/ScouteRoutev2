@@ -422,12 +422,11 @@ function renderRouteStops(routeProps, data) {
 // If no properties exist for a category, shows "No X in your area."
 // Caps display at MAX_PER_BUCKET per category.
 function renderCategories(allProps, routeProps, data) {
-  // Match on address (more reliable than name for "On Route" badge)
-  // routeProps contains exactly the 8 stops passed to the Directions embed
+  // Match on address ONLY — name matching causes false positives for chains
+  // (e.g. two "Fitness Connection" branches where only one is on the route)
   const routeAddrs = new Set(routeProps.map(p => p.a.trim().toLowerCase()));
-  const routeNames = new Set(routeProps.map(p => p.n.trim().toLowerCase()));
   function isOnRoute(p) {
-    return routeAddrs.has(p.a.trim().toLowerCase()) || routeNames.has(p.n.trim().toLowerCase());
+    return routeAddrs.has(p.a.trim().toLowerCase());
   }
 
   // Group props by type, cap at MAX_PER_BUCKET
