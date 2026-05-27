@@ -50,7 +50,7 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;}
 .section-heading-sub{font-size:13px;color:var(--ink-light);}
 .map-block{border-radius:var(--r-lg);overflow:hidden;border:1.5px solid var(--border);box-shadow:var(--shadow-md);margin-bottom:40px;position:relative;background:#e8e0d0;}
 .map-block iframe{width:100%;height:420px;display:block;border:none;}
-.map-block-label{position:absolute;top:14px;left:14px;background:var(--ink);color:white;font-size:12px;font-weight:600;letter-spacing:0.5px;padding:6px 14px;border-radius:999px;z-index:10;}
+.map-block-label{position:absolute;top:14px;right:14px;background:var(--ink);color:white;font-size:12px;font-weight:600;letter-spacing:0.5px;padding:6px 14px;border-radius:999px;z-index:10;}
 .map-placeholder{height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--paper-2);color:var(--ink-light);gap:10px;font-size:14px;text-align:center;padding:24px;}
 .map-placeholder .map-icon{font-size:40px;}
 .route-stops{display:flex;flex-direction:column;gap:0;margin-bottom:40px;}
@@ -80,6 +80,7 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;}
 .stop-tag.machine{background:var(--blue-light);color:var(--blue);}
 .stop-tag.occupants{background:var(--purple-light);color:var(--purple);}
 .stop-tag.rev{background:var(--teal-light);color:var(--teal);}
+.stop-tag.drive{background:var(--teal-light);color:var(--teal);}
 .cat-section{margin-bottom:44px;}
 .cat-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--border);}
 .cat-header-icon{font-size:22px;}
@@ -355,33 +356,64 @@ function renderMap(data, routeProps) {
 }
 
 // ── RENDER ROUTE STOPS ───────────────────────────────────────────────────
-// Drive times removed — Google Maps embed shows real drive times.
-// Revenue replaced with seeded random $1000-$1500/mo.
+// ── RENDER ROUTE STOPS ───────────────────────────────────────────────────
+// Drive times: read from data.ld (array of seconds per leg set by Apps Script
+// Routes API response). Falls back to haversine estimate for older payloads.
+// Revenue: seeded random $1000-$1500/mo per property name.
 function renderRouteStops(routeProps, data) {
-  document.getElementById('routeSubLabel').textContent =
-    routeProps.length + '-stop route \u00b7 drive times shown on map above';
+  const lead = data.lead;
+  // data.ld = [seconds leg0, seconds leg1, ...] populated by Apps Script.
+  // leg 0 = zip center -> stop 1, leg 1 = stop 1 -> stop 2, etc.
+  // [DRIVE_TIMES] add ld to Apps Script payload to enable real times.
+  const legDurations = data.ld || null;
 
-  document.getElementById('routeStops').innerHTML = routeProps.map((p, i) => {
-    const rev      = seededRandRev(p.n);
-    const machName = MACH_NAME_MAP[DEFAULT_MACHINE_BY_PROP[p.t] || 'snacks-drinks-ai'] || 'Vending';
-    const typeLabel = PROPERTY_LABELS[p.t] || p.t;
-    const catIcon  = (CATEGORY_META[p.t] || {icon: '\u{1F4CD}'}).icon;
-    const occupants = DEFAULT_DENOM[p.t] || 150;
+  function getDriveMin(i, p) {
+    if (legDurations && legDurations[i] != null) return Math.round(legDurations[i] / 60);
+    const fromLat = i === 0 ? lead.lat : (routeProps[i-1].la != null ? routeProps[i-1].la : lead.lat);
+    const fromLng = i === 0 ? lead.lng : (routeProps[i-1].lo != null ? routeProps[i-1].lo : lead.lng);
+    if (fromLat != null && p.la != null) {
+      const R = 6371, dLat = (p.la-fromLat)*Math.PI/180, dLng = (p.lo-fromLng)*Math.PI/180;
+      const a = Math.sin(dLat/2)**2 + Math.cos(fromLat*Math.PI/180)*Math.cos(p.la*Math.PI/180)*Math.sin(dLng/2)**2;
+      return Math.max(3, Math.round((R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))/40)*60));
+    }
+    return null;
+  }
+
+  const driveMins   = routeProps.map((p,i) => getDriveMin(i, p));
+  const totalDrive  = driveMins.slice(1).reduce((s,v) => s + (v||0), 0);
+  const hasRealTimes = legDurations != null;
+
+  document.getElementById('routeSubLabel').textContent =
+    routeProps.length + '-stop route \u00b7 ~' + totalDrive + ' min total drive'
+    + (hasRealTimes ? '' : ' (est.)');
+
+  document.getElementById('routeStops').innerHTML = routeProps.map((p,i) => {
+    const rev       = seededRandRev(p.n);
+    const machName  = MACH_NAME_MAP[DEFAULT_MACHINE_BY_PROP[p.t]||'snacks-drinks-ai']||'Vending';
+    const typeLabel = PROPERTY_LABELS[p.t]||p.t;
+    const catIcon   = (CATEGORY_META[p.t]||{icon:'\u{1F4CD}'}).icon;
+    const occupants = DEFAULT_DENOM[p.t]||150;
+    const driveMin  = driveMins[i];
+    const driveTag  = i===0
+      ? '<span class="stop-tag" style="background:var(--paper-2);color:var(--ink-mid);">\u{1F3C1} Route start</span>'
+      : driveMin!=null
+        ? '<span class="stop-tag drive">\u{1F697} '+driveMin+' min'+(hasRealTimes?'':' est.')+'</span>'
+        : '';
 
     return '<div class="route-stop">'
-      + '<div class="stop-timeline"><div class="stop-dot' + (i === 0 ? ' start' : '') + '"></div><div class="stop-line"></div></div>'
-      + '<div class="stop-card"><div class="stop-card-top"><div class="stop-card-left">'
-      + '<div class="stop-num-badge">Stop ' + (i + 1) + ' \u00b7 ' + catIcon + ' ' + typeLabel + '</div>'
-      + '<div class="stop-name">' + escHtml(p.n) + '</div>'
-      + '<div class="stop-address">' + escHtml(p.a) + '</div>'
-      + '<div class="stop-tags">'
-      + '<span class="stop-tag machine">' + machName + '</span>'
-      + '<span class="stop-tag occupants">~' + occupants + ' occupants</span>'
-      + '<span class="stop-tag rev">$' + rev.toLocaleString() + '/mo est.</span>'
-      + (i === 0 ? '<span class="stop-tag" style="background:var(--paper-2);color:var(--ink-mid);">\u{1F3C1} Route start</span>' : '')
-      + '</div>'
-      + '</div>'
-      + '</div></div></div>';
+      +'<div class="stop-timeline"><div class="stop-dot'+(i===0?' start':'')+'"></div><div class="stop-line"></div></div>'
+      +'<div class="stop-card"><div class="stop-card-top"><div class="stop-card-left">'
+      +'<div class="stop-num-badge">Stop '+(i+1)+' \u00b7 '+catIcon+' '+typeLabel+'</div>'
+      +'<div class="stop-name">'+escHtml(p.n)+'</div>'
+      +'<div class="stop-address">'+escHtml(p.a)+'</div>'
+      +'<div class="stop-tags">'
+      +'<span class="stop-tag machine">'+machName+'</span>'
+      +'<span class="stop-tag occupants">~'+occupants+' occupants</span>'
+      +'<span class="stop-tag rev">$'+rev.toLocaleString()+'/mo est.</span>'
+      +driveTag
+      +'</div>'
+      +'</div>'
+      +'</div></div></div>';
   }).join('');
 }
 
@@ -390,7 +422,13 @@ function renderRouteStops(routeProps, data) {
 // If no properties exist for a category, shows "No X in your area."
 // Caps display at MAX_PER_BUCKET per category.
 function renderCategories(allProps, routeProps, data) {
-  const selectedNames = new Set(routeProps.map(p => p.n));
+  // Match on address (more reliable than name for "On Route" badge)
+  // routeProps contains exactly the 8 stops passed to the Directions embed
+  const routeAddrs = new Set(routeProps.map(p => p.a.trim().toLowerCase()));
+  const routeNames = new Set(routeProps.map(p => p.n.trim().toLowerCase()));
+  function isOnRoute(p) {
+    return routeAddrs.has(p.a.trim().toLowerCase()) || routeNames.has(p.n.trim().toLowerCase());
+  }
 
   // Group props by type, cap at MAX_PER_BUCKET
   const groups = {};
@@ -409,7 +447,7 @@ function renderCategories(allProps, routeProps, data) {
     } else {
       content = '<div class="cat-cards">'
         + props.map(p => {
-          const sel     = selectedNames.has(p.n);
+          const sel     = isOnRoute(p);
           const rev     = seededRandRev(p.n);
           const machine = MACH_NAME_MAP[DEFAULT_MACHINE_BY_PROP[p.t] || 'snacks-drinks-ai'] || 'Vending';
           return '<div class="prop-card' + (sel ? ' selected' : '') + '">'
