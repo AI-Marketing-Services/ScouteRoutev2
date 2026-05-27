@@ -336,9 +336,10 @@ function renderMap(data, routeProps) {
   if (ph) ph.remove();
 
   const mapStops    = routeProps.slice(0, 8);
-  const origin      = encodeURIComponent((lead.city || '') + ' ' + (lead.state || '') + ' ' + lead.zip);
+  // Use first stop as origin and last stop as destination — no zip center starting point
+  const origin      = encodeURIComponent(mapStops[0].a);
   const destination = encodeURIComponent(mapStops[mapStops.length - 1].a);
-  const waypoints   = mapStops.slice(0, -1).map(p => encodeURIComponent(p.a)).join('|');
+  const waypoints   = mapStops.slice(1, -1).map(p => encodeURIComponent(p.a)).join('|');
 
   const src = 'https://www.google.com/maps/embed/v1/directions?key=' + apiKey
     + '&origin=' + origin
@@ -380,9 +381,7 @@ function renderRouteStops(routeProps, data) {
   }
 
   const driveMins   = routeProps.map((p,i) => getDriveMin(i, p));
-  const totalDrive = legDurations
-  ? Math.round(legDurations.reduce((s, v) => s + (v || 0), 0) / 60)
-  : driveMins.slice(1).reduce((s, v) => s + (v || 0), 0);
+  const totalDrive  = driveMins.slice(1).reduce((s,v) => s + (v||0), 0);
   const hasRealTimes = legDurations != null;
 
   document.getElementById('routeSubLabel').textContent =
