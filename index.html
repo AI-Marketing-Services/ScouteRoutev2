@@ -293,11 +293,11 @@ function renderHeader(data) {
   const location  = cs || lead.zip;
 
   document.getElementById('heroEyebrow').textContent = firstName
-    ? 'Your Personalized Vending Route'
+    ? 'Hello ' + firstName + ' \u2014 Your Personalized Vending Route'
     : 'Your Custom Vending Route';
 
   document.getElementById('heroTitle').textContent = firstName
-    ? 'Hello ' + firstName + ', Here is your personalized vending route for ' + location
+    ? 'Here is your personalized vending route for ' + location
     : 'Your vending opportunities near ' + location;
 
   document.getElementById('heroDesc').innerHTML =
@@ -497,7 +497,8 @@ function renderProjection(routeProps, data) {
 function formatProfit(input) {
   const digits = input.value.replace(/[^0-9]/g, '');
   if (!digits) { input.value = ''; state.desiredProfit = null; return; }
-  state.desiredProfit = parseInt(digits, 10);
+  const MAX_PROFIT = 5000;
+  state.desiredProfit = Math.min(parseInt(digits, 10), MAX_PROFIT);
   input.value = state.desiredProfit.toLocaleString();
 }
 
