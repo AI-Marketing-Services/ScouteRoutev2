@@ -374,7 +374,7 @@ function renderRouteStops(routeProps, data) {
     : driveMins.slice(1).reduce((s,v) => s + (v||0), 0);
 
   document.getElementById('routeSubLabel').textContent =
-    routeProps.length + '-stop route \u00b7 ~' + totalDrive + ' min total drive'
+    routeProps.length + '-stop route \u00b7 See map above for drive time'
     + (hasRealTimes ? '' : ' (est.)');
 
   document.getElementById('routeStops').innerHTML = routeProps.map((p,i) => {
