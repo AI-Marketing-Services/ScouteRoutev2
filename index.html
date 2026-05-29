@@ -297,7 +297,7 @@ function renderHeader(data) {
     : 'Your Custom Vending Route';
 
   document.getElementById('heroTitle').textContent = firstName
-    ? 'Hello ' + firstName ', Here is your personalized vending route for ' + location
+    ? 'Hello ' + firstName + ', Here is your personalized vending route for ' + location
     : 'Your vending opportunities near ' + location;
 
   document.getElementById('heroDesc').innerHTML =
@@ -374,7 +374,7 @@ function renderRouteStops(routeProps, data) {
     : driveMins.slice(1).reduce((s,v) => s + (v||0), 0);
 
   document.getElementById('routeSubLabel').textContent =
-    routeProps.length + '-stop route \u00b7 See map for drive time'
+    routeProps.length + '-stop route \u00b7 ~' + totalDrive + ' min total drive'
     + (hasRealTimes ? '' : ' (est.)');
 
   document.getElementById('routeStops').innerHTML = routeProps.map((p,i) => {
