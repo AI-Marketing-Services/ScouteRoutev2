@@ -293,11 +293,11 @@ function renderHeader(data) {
   const location  = cs || lead.zip;
 
   document.getElementById('heroEyebrow').textContent = firstName
-    ? 'Hello ' + firstName + ' \u2014 Your Personalized Vending Route'
+    ? 'Your Personalized Vending Route'
     : 'Your Custom Vending Route';
 
   document.getElementById('heroTitle').textContent = firstName
-    ? 'Here is your personalized vending route for ' + location
+    ? 'Hello ' + firstName + ', Here is your personalized vending route for ' + location
     : 'Your vending opportunities near ' + location;
 
   document.getElementById('heroDesc').innerHTML =
