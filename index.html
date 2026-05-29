@@ -335,12 +335,19 @@ function renderMap(data, routeProps) {
   const ph = document.getElementById('mapPlaceholder');
   if (ph) ph.remove();
 
-  const mapStops    = routeProps.slice(0, 8);
-  // Use first stop as origin and last stop as destination — no zip center starting point
-  const origin      = encodeURIComponent(mapStops[0].a);
-  const destination = encodeURIComponent(mapStops[mapStops.length - 1].a);
-  // via: prefix freezes waypoint order — embed won't reorder our Routes API result
-  const waypoints   = mapStops.slice(1, -1).map(p => 'via:' + encodeURIComponent(p.a)).join('|');
+  const mapStops = routeProps.slice(0, 8);
+
+  // Use place_id: syntax for clean named stops in the embed UI (no "via:" bleed).
+  // Falls back to lat,lng if place_id absent, then address if no coords either.
+  function stopToParam(p) {
+    if (p.pi) return 'place_id:' + p.pi;
+    if (p.la != null && p.lo != null) return p.la + ',' + p.lo;
+    return encodeURIComponent(p.a);
+  }
+
+  const origin      = stopToParam(mapStops[0]);
+  const destination = stopToParam(mapStops[mapStops.length - 1]);
+  const waypoints   = mapStops.slice(1, -1).map(p => stopToParam(p)).join('|');
 
   const src = 'https://www.google.com/maps/embed/v1/directions?key=' + apiKey
     + '&origin=' + origin
