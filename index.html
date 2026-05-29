@@ -204,7 +204,6 @@ h1,h2,h3,h4{font-family:'DM Serif Display',serif;}
 </div>
 
 <script>
-// ── LOOKUPS ──────────────────────────────────────────────────────────────
 const PROPERTY_LABELS = {
   'apartment':'Apartment','office-gov':'Office / Gov','gym':'Gym / Rec Center',
   'manufacturing-warehouse':'Manufacturing / Warehouse','medical':'Medical / Hospital',
@@ -237,27 +236,19 @@ const MACH_NAME_MAP = {
   'micromarket':'Micromarket','other':'Other',
 };
 
-// ── DENSITY NAME MAP ─────────────────────────────────────────────────────
-// To re-enable density labels: uncomment the DENSITY_NAME_MAP and all
-// lines marked [DENSITY] below.
 // const DENSITY_NAME_MAP = { 'major':'Major City','city':'City (<1M)','suburban':'Suburban','rural':'Rural' }; // [DENSITY]
 
 const PROFIT_PER_MACHINE = 600;
 
-// ── REVENUE ESTIMATE ─────────────────────────────────────────────────────
-// Returns a stable random value between $1000-$1500/mo per machine.
-// Seeded by the property name so it doesn't change on re-render.
 function seededRandRev(name) {
   let h = 0;
   for (let i = 0; i < name.length; i++) h = (Math.imul(31, h) + name.charCodeAt(i)) | 0;
   h = Math.abs(h);
-  return 1000 + (h % 501); // $1000 to $1500
+  return 1000 + (h % 501);
 }
 
-// ── STATE ────────────────────────────────────────────────────────────────
 const state = {desiredProfit:null, recommendedMachines:null, leadData:null, routeProperties:[]};
 
-// ── DECODE URL ───────────────────────────────────────────────────────────
 function decodeFromURL() {
   const d = new URLSearchParams(window.location.search).get('d');
   if (!d) return null;
@@ -266,61 +257,56 @@ function decodeFromURL() {
     if (!json) return null;
     const data = JSON.parse(json);
     if (!data || data.v !== 1 || !data.lead || !Array.isArray(data.properties)) return null;
-    // density is optional — gracefully absent if classification is disabled
     return data;
   } catch(e) { console.error('Decode failed:', e); return null; }
 }
 
-// ── ROUTE SELECTION ──────────────────────────────────────────────────────
-// Caps at MAX_PER_BUCKET per category before selecting route stops.
-// Guarantees diversity — no single type can flood the route.
 const MAX_PER_BUCKET = 5;
 
 function selectRouteProperties(properties, targetCount) {
-  // Group by type, cap at MAX_PER_BUCKET each
   const groups = {};
   properties.forEach(p => {
     if (!groups[p.t]) groups[p.t] = [];
     if (groups[p.t].length < MAX_PER_BUCKET) groups[p.t].push(p);
   });
-
-  // Distribute slots: 1 from each category first, then fill remaining slots
   const selected = [];
   const catKeys = CATEGORY_ORDER.filter(k => groups[k] && groups[k].length > 0);
-
-  // First pass: 1 from each
   catKeys.forEach(k => {
     if (selected.length < targetCount) selected.push({...groups[k][0]});
   });
-
-  // Second + third pass: up to MAX_PER_BUCKET per category
   for (let slot = 1; slot < MAX_PER_BUCKET; slot++) {
     catKeys.forEach(k => {
       if (selected.length >= targetCount) return;
       if (groups[k][slot]) selected.push({...groups[k][slot]});
     });
   }
-
   return selected.slice(0, targetCount);
 }
 
-// ── RENDER HEADER ────────────────────────────────────────────────────────
+// ── RENDER HEADER ─────────────────────────────────────────────────────────
+// Personalized greeting when lead.name is present in payload.
 function renderHeader(data) {
   const {lead, properties} = data;
-  const cs = [lead.city, lead.state].filter(Boolean).join(', ');
-  const cats = CATEGORY_ORDER.filter(c => properties.some(p => p.t === c)).length;
-  document.getElementById('heroEyebrow').textContent = 'Custom Route \u2014 ' + (cs || lead.zip);
-  document.getElementById('heroTitle').textContent   = 'Your vending opportunities near ' + (cs || lead.zip);
+  const cs        = [lead.city, lead.state].filter(Boolean).join(', ');
+  const cats      = CATEGORY_ORDER.filter(c => properties.some(p => p.t === c)).length;
+  const firstName = (lead.name || '').trim();
+  const location  = cs || lead.zip;
+
+  document.getElementById('heroEyebrow').textContent = firstName
+    ? 'Hello ' + firstName + ' \u2014 Your Personalized Vending Route'
+    : 'Your Custom Vending Route';
+
+  document.getElementById('heroTitle').textContent = firstName
+    ? 'Here is your personalized vending route for ' + location
+    : 'Your vending opportunities near ' + location;
+
   document.getElementById('heroDesc').innerHTML =
     'We found <strong>' + properties.length + ' qualifying properties</strong> within 15 miles of ' +
     (cs ? cs + ' (' + lead.zip + ')' : lead.zip) + ' across ' + cats +
     ' property categories. Enter your target profit below to see a custom route and projected ROI.';
 }
 
-// ── RENDER MAP ───────────────────────────────────────────────────────────
-// Interactive Google Maps Directions embed — scrollable, shows real roads.
-// Requires Maps Embed API enabled on GMAPS_EMBED_KEY.
-// Clears previous map on every call (profit input changes trigger re-render).
+// ── RENDER MAP ─────────────────────────────────────────────────────────────
 function renderMap(data, routeProps) {
   const lead = data.lead;
   const cs   = [lead.city, lead.state].filter(Boolean).join(', ');
@@ -337,8 +323,6 @@ function renderMap(data, routeProps) {
 
   const mapStops = routeProps.slice(0, 8);
 
-  // Use place_id: syntax for clean named stops in the embed UI (no "via:" bleed).
-  // Falls back to lat,lng if place_id absent, then address if no coords either.
   function stopToParam(p) {
     if (p.pi) return 'place_id:' + p.pi;
     if (p.la != null && p.lo != null) return p.la + ',' + p.lo;
@@ -364,22 +348,16 @@ function renderMap(data, routeProps) {
   block.appendChild(iframe);
 }
 
-// ── RENDER ROUTE STOPS ───────────────────────────────────────────────────
-// ── RENDER ROUTE STOPS ───────────────────────────────────────────────────
-// Drive times: read from data.ld (array of seconds per leg set by Apps Script
-// Routes API response). Falls back to haversine estimate for older payloads.
-// Revenue: seeded random $1000-$1500/mo per property name.
+// ── RENDER ROUTE STOPS ─────────────────────────────────────────────────────
 function renderRouteStops(routeProps, data) {
   const lead = data.lead;
-  // data.ld = [seconds leg0, seconds leg1, ...] populated by Apps Script.
-  // leg 0 = zip center -> stop 1, leg 1 = stop 1 -> stop 2, etc.
-  // [DRIVE_TIMES] add ld to Apps Script payload to enable real times.
   const legDurations = data.ld || null;
 
   function getDriveMin(i, p) {
-    if (legDurations && legDurations[i] != null) return Math.round(legDurations[i] / 60);
-    const fromLat = i === 0 ? lead.lat : (routeProps[i-1].la != null ? routeProps[i-1].la : lead.lat);
-    const fromLng = i === 0 ? lead.lng : (routeProps[i-1].lo != null ? routeProps[i-1].lo : lead.lng);
+    if (legDurations && i > 0 && legDurations[i] != null) return Math.round(legDurations[i] / 60);
+    if (i === 0) return null;
+    const fromLat = routeProps[i-1].la != null ? routeProps[i-1].la : lead.lat;
+    const fromLng = routeProps[i-1].lo != null ? routeProps[i-1].lo : lead.lng;
     if (fromLat != null && p.la != null) {
       const R = 6371, dLat = (p.la-fromLat)*Math.PI/180, dLng = (p.lo-fromLng)*Math.PI/180;
       const a = Math.sin(dLat/2)**2 + Math.cos(fromLat*Math.PI/180)*Math.cos(p.la*Math.PI/180)*Math.sin(dLng/2)**2;
@@ -388,12 +366,15 @@ function renderRouteStops(routeProps, data) {
     return null;
   }
 
-  const driveMins   = routeProps.map((p,i) => getDriveMin(i, p));
-  const totalDrive  = driveMins.slice(1).reduce((s,v) => s + (v||0), 0);
+  const driveMins    = routeProps.map((p,i) => getDriveMin(i, p));
   const hasRealTimes = legDurations != null;
+  // Total = sum of all legs between stops (skip i=0 which is null/route-start)
+  const totalDrive   = legDurations
+    ? Math.round(legDurations.slice(1).reduce((s,v) => s + (v||0), 0) / 60)
+    : driveMins.slice(1).reduce((s,v) => s + (v||0), 0);
 
   document.getElementById('routeSubLabel').textContent =
-    routeProps.length + '-stop route \u00b7 See maps for drive time'
+    routeProps.length + '-stop route \u00b7 ~' + totalDrive + ' min total drive'
     + (hasRealTimes ? '' : ' (est.)');
 
   document.getElementById('routeStops').innerHTML = routeProps.map((p,i) => {
@@ -426,19 +407,12 @@ function renderRouteStops(routeProps, data) {
   }).join('');
 }
 
-// ── RENDER CATEGORIES ────────────────────────────────────────────────────
-// Shows ALL categories from CATEGORY_ORDER.
-// If no properties exist for a category, shows "No X in your area."
-// Caps display at MAX_PER_BUCKET per category.
+// ── RENDER CATEGORIES ──────────────────────────────────────────────────────
 function renderCategories(allProps, routeProps, data) {
-  // Match on address ONLY — name matching causes false positives for chains
-  // (e.g. two "Fitness Connection" branches where only one is on the route)
+  // Address-only matching — name matching causes false positives for chains
   const routeAddrs = new Set(routeProps.map(p => p.a.trim().toLowerCase()));
-  function isOnRoute(p) {
-    return routeAddrs.has(p.a.trim().toLowerCase());
-  }
+  function isOnRoute(p) { return routeAddrs.has(p.a.trim().toLowerCase()); }
 
-  // Group props by type, cap at MAX_PER_BUCKET
   const groups = {};
   allProps.forEach(p => {
     if (!groups[p.t]) groups[p.t] = [];
@@ -479,18 +453,13 @@ function renderCategories(allProps, routeProps, data) {
   }).join('');
 }
 
-// ── RENDER PROJECTION ────────────────────────────────────────────────────
+// ── RENDER PROJECTION ──────────────────────────────────────────────────────
 function renderProjection(routeProps, data) {
   const $$ = v => '$' + Math.round(v).toLocaleString();
-
-  // Use seeded random revenue per stop
   let totalMonthlyRev = 0;
   routeProps.forEach(p => { totalMonthlyRev += seededRandRev(p.n); });
-
-  // ── To re-enable density multiplier, uncomment these lines [DENSITY]:
   // const density = data.density || 'city';
-  // if (density === 'city') totalMonthlyRev *= 1.15;
-
+  // if (density === 'city') totalMonthlyRev *= 1.15; // [DENSITY]
   totalMonthlyRev = Math.round(totalMonthlyRev);
   const mc   = routeProps.length;
   const ar   = totalMonthlyRev * 12;
@@ -498,10 +467,8 @@ function renderProjection(routeProps, data) {
   const ap   = ar - cogs - saas - df - ins;
   const mp   = ap / 12;
   const av   = ar * 1.1;
-
-  // ── To re-enable density label in banner, uncomment [DENSITY]:
   // const dn = DENSITY_NAME_MAP[data.density] || 'Local'; // [DENSITY]
-  const dn = 'Local'; // remove this line when re-enabling density
+  const dn = 'Local';
 
   document.getElementById('projSection').innerHTML =
     '<div class="proj-banner"><div class="proj-banner-eyebrow">Your Route Projection</div>'
@@ -527,7 +494,6 @@ function renderProjection(routeProps, data) {
     + '<div class="disclaimer"><strong>Disclaimer:</strong> Projections are estimates based on VendingPreneur member data across 500+ locations. Actual results depend on location quality, product mix, machine type, and operator effort. Does not include startup costs.</div>';
 }
 
-// ── INPUT HANDLING ───────────────────────────────────────────────────────
 function formatProfit(input) {
   const digits = input.value.replace(/[^0-9]/g, '');
   if (!digits) { input.value = ''; state.desiredProfit = null; return; }
@@ -557,13 +523,11 @@ function onInputChange() {
   scheduleCapture();
 }
 
-// ── UTIL ─────────────────────────────────────────────────────────────────
 function escHtml(s) {
   if (s == null) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── CAPTURE ──────────────────────────────────────────────────────────────
 let _captureTimer = null, _lastCaptureBody = null;
 function scheduleCapture() {
   if (!state.leadData || !state.leadData.id || !state.leadData.sig) return;
@@ -586,7 +550,6 @@ function sendCapture() {
     .catch(e => console.warn('Capture POST failed:', e));
 }
 
-// ── INIT ─────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
   const data = decodeFromURL();
   if (!data) { document.getElementById('emptyState').style.display = 'block'; return; }
