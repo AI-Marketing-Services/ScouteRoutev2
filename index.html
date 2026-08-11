@@ -246,6 +246,12 @@ const MACH_NAME_MAP = {
 
 const PROFIT_PER_MACHINE = 600;
 
+// Same key used for the Maps Embed iframe. Reused here for the Routes API
+// call below — make sure this key has "Routes API" enabled AND is locked
+// down with an HTTP referrer restriction to this report's domain, since
+// it's fully visible in this page's source to anyone who opens it.
+const ROUTES_API_KEY = window.GMAPS_EMBED_KEY || '';
+
 function seededRandRev(name) {
   let h = 0;
   for (let i = 0; i < name.length; i++) h = (Math.imul(31, h) + name.charCodeAt(i)) | 0;
@@ -287,6 +293,83 @@ function selectRouteProperties(properties, targetCount) {
     });
   }
   return selected.slice(0, targetCount);
+}
+
+// ── CLIENT-SIDE ROUTE RE-OPTIMIZATION ───────────────────────────────────────
+//
+// The backend (Apps Script) only optimizes ONE fixed 8-stop set at export
+// time. But selectRouteProperties() above can hand back a totally
+// different subset (fewer stops, different categories) every time the
+// profit slider moves — so the backend's `data.ld` / `data.rp` almost
+// never actually describes the route currently on screen.
+//
+// This re-runs the same round-trip optimizeWaypointOrder call, but against
+// whichever stops are ACTUALLY selected right now, so displayed drive
+// times and the map always describe the same route.
+//
+// Requires "Routes API" enabled on ROUTES_API_KEY and (recommended) an
+// HTTP referrer restriction locking that key to this domain.
+async function computeOptimizedRoute(lead, stops) {
+  if (!ROUTES_API_KEY || !stops || stops.length < 2) return null;
+
+  const center = { location: { latLng: { latitude: lead.lat, longitude: lead.lng } } };
+  const intermediates = stops.map(p => ({ location: { latLng: { latitude: p.la, longitude: p.lo } } }));
+
+  const body = {
+    origin:                center,
+    destination:           center,
+    intermediates:         intermediates,
+    travelMode:            'DRIVE',
+    optimizeWaypointOrder: true,
+    routingPreference:     'TRAFFIC_AWARE',
+  };
+
+  let resp;
+  try {
+    resp = await fetch('https://routes.googleapis.com/directions/v2:computeRoutes', {
+      method: 'POST',
+      headers: {
+        'Content-Type':      'application/json',
+        'X-Goog-Api-Key':    ROUTES_API_KEY,
+        'X-Goog-FieldMask':  'routes.optimizedIntermediateWaypointIndex,routes.polyline.encodedPolyline,routes.legs.duration',
+      },
+      body: JSON.stringify(body),
+    });
+  } catch (e) {
+    console.warn('Routes API network error:', e);
+    return null;
+  }
+
+  if (!resp.ok) {
+    console.warn('Routes API HTTP', resp.status, await resp.text().catch(() => ''));
+    return null;
+  }
+
+  let data;
+  try { data = await resp.json(); } catch (e) { console.warn('Routes API JSON parse error:', e); return null; }
+
+  const route = data.routes && data.routes[0];
+  if (!route) return null;
+
+  const order = route.optimizedIntermediateWaypointIndex || [];
+  if (order.length !== stops.length) {
+    console.warn('Routes API order length mismatch:', order.length, 'vs', stops.length);
+    return null;
+  }
+
+  const legs = route.legs || [];
+  const allLegSeconds = legs.map(leg => {
+    if (!leg.duration) return null;
+    if (typeof leg.duration === 'string') return parseInt(leg.duration.replace('s', ''), 10) || null;
+    if (leg.duration.seconds != null) return parseInt(leg.duration.seconds, 10) || null;
+    return null;
+  });
+  // Drop the final return-to-origin leg — only keep time TO each stop.
+  const legSeconds = allLegSeconds.slice(0, stops.length);
+
+  const polyline = route.polyline && route.polyline.encodedPolyline ? route.polyline.encodedPolyline : null;
+
+  return { order, legSeconds, polyline };
 }
 
 // ── RENDER HEADER ─────────────────────────────────────────────────────────
@@ -355,9 +438,12 @@ function renderMap(data, routeProps) {
 }
 
 // ── RENDER ROUTE STOPS ─────────────────────────────────────────────────────
-function renderRouteStops(routeProps, data) {
-  const lead = data.lead;
-  const legDurations = data.ld || null;
+// legDurations: real per-stop drive times (seconds) for THIS EXACT routeProps
+// order, from computeOptimizedRoute() — NOT data.ld, which only ever describes
+// the backend's original fixed 8-stop set. Pass null while a fresh calc is
+// in flight (falls back to straight-line estimates, labeled "est.").
+function renderRouteStops(routeProps, legDurations) {
+  const lead = state.leadData.lead;
 
   function getDriveMin(i, p) {
     if (legDurations && i > 0 && legDurations[i] != null) return Math.round(legDurations[i] / 60);
@@ -508,7 +594,12 @@ function formatProfit(input) {
   input.value = state.desiredProfit.toLocaleString();
 }
 
-function onInputChange() {
+// Fires on every profit-slider keystroke. Renders an immediate estimate-based
+// pass so the UI never sits blank, then kicks off a live Routes API call for
+// the EXACT subset of stops just selected and re-renders with real times
+// once that resolves. If the input changes again before the call finishes,
+// the stale result is discarded (see the state.routeProperties check below).
+async function onInputChange() {
   if (!state.desiredProfit || state.desiredProfit <= 0) {
     document.getElementById('profitRec').style.display = 'none';
     document.getElementById('resultsBlock').classList.add('hidden');
@@ -519,15 +610,35 @@ function onInputChange() {
   state.recommendedMachines = count;
   document.getElementById('profitRec').style.display = 'block';
   document.getElementById('recMachineNum').textContent = count;
-  const data       = state.leadData;
+  const data = state.leadData;
+
   const routeProps = selectRouteProperties(data.properties, target);
   state.routeProperties = routeProps;
+
+  // Immediate pass with straight-line estimates (labeled "est.") while the
+  // real Routes API call is in flight.
   renderMap(data, routeProps);
-  renderRouteStops(routeProps, data);
+  renderRouteStops(routeProps, null);
   renderCategories(data.properties, routeProps, data);
   renderProjection(routeProps, data);
   document.getElementById('resultsBlock').classList.remove('hidden');
   scheduleCapture();
+
+  const withCoords    = routeProps.filter(p => p.la != null && p.lo != null);
+  const withoutCoords = routeProps.filter(p => p.la == null || p.lo == null);
+  if (withCoords.length < 2) return;
+
+  const result = await computeOptimizedRoute(data.lead, withCoords);
+  // Bail if the slider moved again while we were waiting on the network.
+  if (!result || state.routeProperties !== routeProps) return;
+
+  const finalOrder = result.order.map(idx => withCoords[idx]).concat(withoutCoords);
+  state.routeProperties = finalOrder;
+
+  renderMap(data, finalOrder);
+  renderRouteStops(finalOrder, result.legSeconds);
+  renderCategories(data.properties, finalOrder, data);
+  renderProjection(finalOrder, data);
 }
 
 function escHtml(s) {
